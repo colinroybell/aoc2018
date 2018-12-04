@@ -1,62 +1,24 @@
-use std::fs::File;
-use std::io::{BufRead, BufReader};
-use std::str;
-use std::collections::HashSet;
+use std::env;
 
-fn day1a(filename: &str) -> i32 {
-    let f = File::open(filename).expect("file not found");
-    let f = BufReader::new(f);
+mod day01;
+mod day02;
+mod day03;
+mod day04;
 
-    let mut sum:i32 = 0;
-
-    for line in f.lines() {
-        let line = line.expect("Unable to read line");
-        let num:i32 = line.parse().unwrap();
-        sum += num
-    }
-    
-    sum
-}        
-
-fn day1b(filename: &str) -> i32 {
-    let f = File::open(filename).expect("file not found");
-    let f = BufReader::new(f);
-
-    let mut nums:Vec<i32> = Vec::new();
-
-    for line in f.lines() {
-        let line = line.expect("Unable to read line");
-        let num:i32 = line.parse().unwrap();
-        nums.push(num);
-    }
-
-    let mut sum:i32 = 0;
-    let mut seen = HashSet::new();
-    loop {
-        for num in &mut nums {
-            let num:i32 = *num;
-          
-            if seen.contains(&sum) {
-                return sum;
-            } else {
-                seen.insert(sum);
-            }
-            sum += num;
-        }
-    }
-}
+extern crate regex;
 
 fn main() {
-    assert_eq!(3,day1a("input/01a_test1.txt"));
-    assert_eq!(0,day1a("input/01a_test2.txt"));
-    assert_eq!(-6,day1a("input/01a_test3.txt"));
+    let args: Vec<String> = env::args().collect();
 
-    println!("Part 1 answer: {:?}", day1a("input/01a.txt"));
-
-    assert_eq!(0,day1b("input/01b_test1.txt"));
-    assert_eq!(10,day1b("input/01b_test2.txt"));
-    assert_eq!(5,day1b("input/01b_test3.txt")); 
-    assert_eq!(14,day1b("input/01b_test4.txt")); 
- 
-    println!("Part 2 answer: {:?}", day1b("input/01a.txt")); 
+    if let Some(day) = args[1].parse::<i32>().ok() {
+        match day {
+            1 => day01::run(),
+            2 => day02::run(),
+            3 => day03::run(),
+            4 => day04::run(),
+            _ => println!("Can't run day {}",day),
+        } 
+    } else {
+        println!("Day is invalid");
+    }
 }
