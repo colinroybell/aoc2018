@@ -14,17 +14,16 @@ mod tests {
 
     #[test]
     fn test_day6b() {
-        // won't work as we need different value of threshold
-//        assert_eq!(16,day6b("input/06a_test1.txt"));
+        assert_eq!(16,day6b("input/06a_test1.txt",32));
     }
 }   
 
-fn tryNew(nextClaims: &mut HashMap<(usize,usize),usize>, claims: &mut HashMap<(usize,usize),usize>, n: usize, contested: usize, x: usize, y: usize) -> () {
+fn try_new(next_claims: &mut HashMap<(usize,usize),usize>, claims: &mut HashMap<(usize,usize),usize>, n: usize, contested: usize, x: usize, y: usize) -> () {
     let key = (x,y);
     if claims.contains_key(&key) {
         return
     }
-    let claim = nextClaims.entry(key).or_insert(n);
+    let claim = next_claims.entry(key).or_insert(n);
     if *claim != n {
         *claim = contested;
     }
@@ -36,15 +35,15 @@ fn day6a(filename: &str) -> usize {
  
     let re1 = Regex::new(r"(\d+),\s+(\d+)").unwrap();
     
-    let mut minX=1000000;
-    let mut minY=1000000;
-    let mut maxX=0;
-    let mut maxY=0;
+    let mut min_x=1000000;
+    let mut min_y=1000000;
+    let mut max_x=0;
+    let mut max_y=0;
 
     let mut infinite: HashSet<usize> = HashSet::new();
     let mut claims: HashMap<(usize,usize),usize> = HashMap::new();
-    let mut newClaims: HashMap<(usize,usize),usize> = HashMap::new();
-    let mut nextClaims: HashMap<(usize,usize),usize> = HashMap::new();
+    let mut new_claims: HashMap<(usize,usize),usize> = HashMap::new();
+    let mut next_claims: HashMap<(usize,usize),usize> = HashMap::new();
     let mut counts:HashMap<usize,usize> = HashMap::new();
 
     let mut num = 0;
@@ -55,74 +54,72 @@ fn day6a(filename: &str) -> usize {
         let cap = re1.captures(&line).unwrap();
         let x = cap[1].parse().unwrap();
         let y = cap[2].parse().unwrap();     
-        newClaims.insert((x,y),num);
+        new_claims.insert((x,y),num);
         counts.insert(num,0);
-        if x < minX {
-            minX = x
+        if x < min_x {
+            min_x = x
         } 
-        if x > maxX {
-            maxX = x
+        if x > max_x {
+            max_x = x
         }
-        if y < minY {
-            minY = y
+        if y < min_y {
+            min_y = y
         }
-        if y > maxY {
-            maxY = y
+        if y > max_y {
+            max_y = y
         }
         num+=1
      }
 
      
-     while newClaims.len() > 0 {
-        for (pos,n) in newClaims.iter() {
+     while new_claims.len() > 0 {
+        for (pos,n) in new_claims.iter() {
             let n = *n;
             claims.insert(*pos,n);
             let val = counts.entry(n).or_insert(0);
             *val += 1;
-            println!("{} claims {},{}",n,pos.0,pos.1);
-            if pos.0 == minX || pos.0 == maxX || 
-                pos.1 == minY || pos.1 == maxY {
-                println!("{}","infinite");
+            if pos.0 == min_x || pos.0 == max_x || 
+                pos.1 == min_y || pos.1 == max_y {
                 infinite.insert(n);
             }
         }
-        for (pos,n) in newClaims.iter() {
+        for (pos,n) in new_claims.iter() {
             let n = *n;
             // FIXME: claims is not being changed but can't see a way to pass otherwise
-            if pos.0 < maxX {
-                tryNew(&mut nextClaims,&mut claims,n,num,pos.0+1,pos.1+0);
+            if pos.0 < max_x {
+                try_new(&mut next_claims,&mut claims,n,num,pos.0+1,pos.1+0);
             }
-            if pos.0 > minX {
-                tryNew(&mut nextClaims,&mut claims,n,num,pos.0-1,pos.1+0);
+            if pos.0 > min_x {
+                try_new(&mut next_claims,&mut claims,n,num,pos.0-1,pos.1+0);
             }
-            if pos.1 < maxY {
-                tryNew(&mut nextClaims,&mut claims,n,num,pos.0+0,pos.1+1);
+            if pos.1 < max_y {
+                try_new(&mut next_claims,&mut claims,n,num,pos.0+0,pos.1+1);
             }
-            if pos.1 > minY {
-                tryNew(&mut nextClaims,&mut claims,n,num,pos.0+0,pos.1-1);
+            if pos.1 > min_y {
+                try_new(&mut next_claims,&mut claims,n,num,pos.0+0,pos.1-1);
             }
         }
-        newClaims.clear();
-        for (pos,n) in nextClaims.iter() {
-            newClaims.insert(*pos,*n);
+        new_claims.clear();
+        for (pos,n) in next_claims.iter() {
+            new_claims.insert(*pos,*n);
         }
-        nextClaims.clear();
+        next_claims.clear();
     }
-    let mut maxSize: usize = 0;
+    let mut max_size: usize = 0;
     for n in 0..num {
         if !infinite.contains(&n) {
             let size = counts.get(&n).unwrap();
-            if *size > maxSize {
-                maxSize = *size;
+            if *size > max_size {
+                max_size = *size;
             }
         }
     }
-    maxSize
+    max_size
 
 }
 
     
-fn day6b(filename: &str) -> usize {    
+fn day6b(filename: &str, threshold: usize) -> usize {    
       let f = File::open(filename).expect("file not found");
     let f = BufReader::new(f);
  
@@ -143,11 +140,11 @@ fn day6b(filename: &str) -> usize {
      let mut count :usize = 0;
      for x in 0..400 {
         for y in 0..400 {
-            let mut sum :isize = 0;
+            let mut sum :usize = 0;
             for core in &cores {
-                sum+=(x-core.0).abs()+(y-core.1).abs()
+                sum+=((x-core.0).abs()+(y-core.1).abs()) as usize;
             }
-            if sum < 10000 {
+            if sum < threshold {
                 count+=1
             }
         }
@@ -158,5 +155,5 @@ fn day6b(filename: &str) -> usize {
 
 pub fn run() {  
     println!("Part 1 answer: {:?}", day6a("input/06.txt"));
-    println!("Part 2 answer: {:?}", day6b("input/06.txt")); 
+    println!("Part 2 answer: {:?}", day6b("input/06.txt",10000)); 
 }

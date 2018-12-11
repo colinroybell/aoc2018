@@ -106,8 +106,8 @@ fn day5b(filename: &str) -> u32 {
     let mut minimum: u32 = 1000000;
 
     for c in polymers {
-        let passedText = &text;
-        let res = calc(passedText.to_string(),c);
+        let passed_text = &text;
+        let res = calc(passed_text.to_string(),c);
         println!("{} {}",c,res);
         if res < minimum {
             minimum = res

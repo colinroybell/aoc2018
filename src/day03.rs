@@ -35,16 +35,16 @@ fn day3a(filename: &str) -> u32 {
         assert!(re.is_match(&line));
         let cap = re.captures(&line).unwrap();
         let _claim:u32 = cap[1].parse().unwrap();
-        let xStart:u32 = cap[2].parse().unwrap();
-        let yStart:u32 = cap[3].parse().unwrap();
-        let xSize:u32 = cap[4].parse().unwrap();
-        let ySize:u32 = cap[5].parse().unwrap();
+        let x_start:u32 = cap[2].parse().unwrap();
+        let y_start:u32 = cap[3].parse().unwrap();
+        let x_size:u32 = cap[4].parse().unwrap();
+        let y_size:u32 = cap[5].parse().unwrap();
 
-        println!("{} {} {} {}",xStart,yStart,xSize,ySize);
-        assert!(((xStart+xSize) as usize) < SIZE);
-        assert!(((yStart+ySize) as usize) < SIZE);
-        for x in xStart..xStart+xSize {
-            for y in yStart..yStart+ySize {
+        println!("{} {} {} {}",x_start,y_start,x_size,y_size);
+        assert!(((x_start+x_size) as usize) < SIZE);
+        assert!(((y_start+y_size) as usize) < SIZE);
+        for x in x_start..x_start+x_size {
+            for y in y_start..y_start+y_size {
                 claims[x as usize][y as usize] += 1;
             }
         }
@@ -80,18 +80,18 @@ fn day3b(filename: &str) -> u32 {
         assert!(re.is_match(&line));
         let cap = re.captures(&line).unwrap();
         let claim:u32 = cap[1].parse().unwrap();
-        let xStart:u32 = cap[2].parse().unwrap();
-        let yStart:u32 = cap[3].parse().unwrap();
-        let xSize:u32 = cap[4].parse().unwrap();
-        let ySize:u32 = cap[5].parse().unwrap();
+        let x_start:u32 = cap[2].parse().unwrap();
+        let y_start:u32 = cap[3].parse().unwrap();
+        let x_size:u32 = cap[4].parse().unwrap();
+        let y_size:u32 = cap[5].parse().unwrap();
 
         good.insert(claim);
 
-        println!("{} {} {} {}",xStart,yStart,xSize,ySize);
-        assert!(((xStart+xSize) as usize) < SIZE);
-        assert!(((yStart+ySize) as usize) < SIZE);
-        for x in xStart..xStart+xSize {
-            for y in yStart..yStart+ySize {
+        println!("{} {} {} {}",x_start,y_start,x_size,y_size);
+        assert!(((x_start+x_size) as usize) < SIZE);
+        assert!(((y_start+y_size) as usize) < SIZE);
+        for x in x_start..x_start+x_size {
+            for y in y_start..y_start+y_size {
                 let val = claims[x as usize][y as usize];
                 if val > 0 {
                     good.remove(&val);

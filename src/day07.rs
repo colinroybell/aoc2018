@@ -16,7 +16,7 @@ mod tests {
     #[test]
     fn test_day7b() {
         // again different parameters 
-        assert_eq!(15,day7b("input/07a_test1.txt"));
+        assert_eq!(15,day7b("input/07a_test1.txt",2,0));
     }
 }   
 
@@ -29,7 +29,7 @@ fn day7a(filename: &str) -> String {
     let mut output: String = "".to_string();
     let mut seen: Vec<bool> = Vec::new();
 
-    for i in 0..27 {
+    for _i in 0..27 {
         deps.push(Vec::new());
         counts.push(0);
         seen.push(false);
@@ -69,29 +69,25 @@ fn day7a(filename: &str) -> String {
 }
 
     
-fn day7b(filename: &str) -> u32 {    
+fn day7b(filename: &str, elves: usize, offset: usize) -> u32 {    
     let f = File::open(filename).expect("file not found");
     let f = BufReader::new(f);
     
     let mut deps: Vec<Vec<usize>> = Vec::new();
     let mut counts: Vec<isize> = Vec::new();
-    let mut output: String = "".to_string();
     let mut seen: Vec<bool> = Vec::new();
     let mut remaining: Vec<usize> = Vec::new();
     let mut assignment: Vec<isize> = Vec::new();
     let mut tasks_remaining = 0;
     let mut clock = 0;
 
-    const ELVES: usize = 5;
-    const OFFSET: usize= 60;
-
-    for i in 0..27 {
+    for _i in 0..27 {
         deps.push(Vec::new());
         counts.push(0);
         seen.push(false);
         remaining.push(0);
     }
-    for i in 0..ELVES {
+    for _i in 0..elves {
         assignment.push(-1);
     }
 
@@ -111,7 +107,7 @@ fn day7b(filename: &str) -> u32 {
 
     for i in 0..27 {
         if seen[i] {
-            remaining[i] = OFFSET + i;
+            remaining[i] = offset + i;
             tasks_remaining += 1;
         }
 
@@ -119,7 +115,8 @@ fn day7b(filename: &str) -> u32 {
 
     while tasks_remaining > 0 {
         println!("clock {}",clock);
-        for elf in 0..ELVES {
+        for elf in 0..elves {
+            let elf: usize = elf;
             let task = assignment[elf];
             if task >= 0 {
                 let task = task as usize;
@@ -151,5 +148,5 @@ fn day7b(filename: &str) -> u32 {
 
 pub fn run() {  
     println!("Part 1 answer: {:?}", day7a("input/07.txt"));
-    println!("Part 2 answer: {:?}", day7b("input/07.txt")); 
+    println!("Part 2 answer: {:?}", day7b("input/07.txt", 5, 60)); 
 }

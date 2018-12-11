@@ -41,7 +41,7 @@ fn day4a(filename: &str) -> u32 {
     let re2 = Regex::new(r"(\d+)").unwrap();
     let mut guard:u32 = 0;
     let mut asleep:u32 = 0;
-    let mut awake:u32 = 0;
+    let mut awake:u32;
     let mut map2:HashMap<u32,u32> = HashMap::new();
     for (key,value) in &map {
         let time = key[14..].parse().unwrap();
@@ -121,7 +121,7 @@ fn day4b(filename: &str) -> u32 {
     let re2 = Regex::new(r"(\d+)").unwrap();
     let mut guard:u32 = 0;
     let mut asleep:u32 = 0;
-    let mut awake:u32 = 0;
+    let mut awake:u32;
     let mut map2:HashMap<String,u32> = HashMap::new();
     for (key,value) in &map {
         let time = key[14..].parse().unwrap();
